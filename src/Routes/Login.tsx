@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 import { useRecoilValue } from "recoil";
 import { resizeState } from "../utils/atom";
+import { InputForm } from "../Coponents/InputForm";
 
 const Box = styled.div<{ size: string }>`
   background-color: ${(props) => props.theme.grayBg};
@@ -221,7 +222,9 @@ export const Login = () => {
       </ClickBox>
       {open && (
         <Container>
-          <LoginBox size={size}></LoginBox>
+          <LoginBox size={size}>
+            <InputForm />
+          </LoginBox>
           <Overlay onClick={() => setOpen(false)}></Overlay>
         </Container>
       )}
