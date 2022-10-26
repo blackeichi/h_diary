@@ -57,6 +57,13 @@ select {
 	border:0 solid black;
 	outline : none;
 }
+input:-webkit-autofill,input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active  {
+   -webkit-box-shadow: 0 0 0 1000px #32353F inset;
+   box-shadow: 0 0 0 1000px #32353F inset;
+   -webkit-text-fill-color:white;
+}
 `;
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

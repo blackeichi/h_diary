@@ -1,4 +1,4 @@
-import { faPaperPlane, faSmile } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import styled from "styled-components";
@@ -133,7 +133,7 @@ const Overlay = styled.div`
 `;
 const LoginBox = styled.div<{ size: string }>`
   width: ${(props) => (props.size === "Small" ? "90%" : "500px")};
-  height: ${(props) => (props.size === "Small" ? "90%" : "500px")};
+  height: ${(props) => (props.size === "Small" ? "350px" : "500px")};
   position: absolute;
   background-color: white;
   border-radius: 40px;
@@ -170,7 +170,7 @@ export const Login = () => {
               transition={{
                 duration: 0.5,
                 repeat: Infinity,
-                repeatDelay: 6,
+                repeatDelay: 4,
               }}
             />
             <Eye
@@ -183,7 +183,7 @@ export const Login = () => {
               transition={{
                 duration: 0.5,
                 repeat: Infinity,
-                repeatDelay: 6,
+                repeatDelay: 4,
               }}
             />
           </Face>
