@@ -92,7 +92,7 @@ export const InputForm = () => {
           data.email,
           data.password
         );
-        history("/home");
+        history("/");
         console.log("login");
       } catch {
         window.alert("이메일/비밀번호를 확인해주세요.🤔");
