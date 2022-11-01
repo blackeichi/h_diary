@@ -187,7 +187,7 @@ export const Login = () => {
               }}
             />
           </Face>
-          <Title size={size}>MY DIARY</Title>
+          <Title size={size}>OUR DIARY</Title>
         </RowBox>
         <ColBox>
           <ChatBox
