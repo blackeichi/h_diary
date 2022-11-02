@@ -1,4 +1,5 @@
 import {
+  faImage,
   faPlus,
   faRightFromBracket,
   faXmark,
@@ -8,11 +9,13 @@ import { motion } from "framer-motion";
 import React, { useState } from "react";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { authService, dbService } from "../fbase";
+import { authService, dbService, storageService } from "../fbase";
 import { resizeState } from "../utils/atom";
 import { FlexBox } from "../utils/Styled";
 import { collection, addDoc } from "firebase/firestore";
 import { Message } from "../Coponents/Message";
+import { v4 as uuidv4 } from "uuid";
+import { ref, uploadString } from "firebase/storage";
 
 const Box = styled.div`
   display: flex;
@@ -101,7 +104,7 @@ const Menu = styled(motion.div)<{ size: string }>`
   width: 250px;
   height: 100%;
   border-right: 1px solid lightgray;
-  position: absolute;
+  position: ${(props) => (props.size === "Web" ? "static" : "absolute")};
   background-color: ${(props) => props.theme.lightBlue};
   z-index: 3;
 `;
@@ -123,6 +126,13 @@ const TextForm = styled(motion.form)<{ size: string }>`
   width: ${(props) => (props.size === "Small" ? "250px" : "400px")};
   box-sizing: border-box;
   position: relative;
+  display: flex;
+  align-items: center;
+`;
+const Img = styled.img`
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
 `;
 const InputText = styled.input`
   height: 50px;
@@ -134,6 +144,7 @@ const InputText = styled.input`
   font-family: "MonoplexKR-Regular";
   font-weight: bold;
   border-radius: 10px;
+  padding-left: 45px;
 `;
 const TextBtn = styled.button`
   height: 50px;
@@ -167,7 +178,6 @@ export const Home = () => {
   const size = useRecoilValue(resizeState);
   const [open, setOpen] = useState(false);
   const toggleSwitch = () => setOpen(!open);
-  console.log(size);
   const user = authService.currentUser;
   const date = new Date();
   const [write, setWrite] = useState(false);
@@ -179,8 +189,26 @@ export const Home = () => {
     } = event;
     setText(value);
   };
+  const [attachment, setAttachment] = useState("");
+  const onFileChange = (event: any) => {
+    const {
+      target: { files },
+    } = event;
+    const theFile = files[0];
+    const reader = new FileReader();
+    reader.onloadend = (finishedEvent) => {
+      const {
+        currentTarget: { result },
+      } = finishedEvent as any;
+      setAttachment(result);
+    };
+    reader.readAsDataURL(theFile);
+  };
   const onSubmit = async (event: any) => {
     event.preventDefault();
+    const fileRef = ref(storageService, `${user?.uid}/${uuidv4()}`);
+    const response = await uploadString(fileRef, attachment, "data_url");
+    console.log(response);
     await addDoc(collection(dbService, "memo"), {
       text,
       createdAt: Date.now(),
@@ -192,7 +220,6 @@ export const Home = () => {
     });
     setText("");
   };
-  console.log(user);
   return (
     <Box>
       <Container size={size}>
@@ -275,7 +302,6 @@ export const Home = () => {
             >
               <TextForm
                 onSubmit={onSubmit}
-                onChange={onChange}
                 size={size}
                 initial={{ scaleX: 0, opacity: 0 }}
                 animate={{ scaleX: write ? 1 : 0, opacity: write ? 1 : 0 }}
@@ -283,7 +309,32 @@ export const Home = () => {
                   setWrite(false);
                 }}
               >
-                <InputText value={text} />
+                <label
+                  htmlFor="photo"
+                  style={{
+                    position: "absolute",
+                    left: "3px",
+                    cursor: "pointer",
+                  }}
+                >
+                  {attachment ? (
+                    <Img src={attachment} />
+                  ) : (
+                    <FontAwesomeIcon
+                      size="2xl"
+                      color={"white"}
+                      icon={faImage}
+                    />
+                  )}
+                </label>
+                <input
+                  id="photo"
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={onFileChange}
+                />
+                <InputText onChange={onChange} value={text} />
                 <TextBtn>보내기</TextBtn>
               </TextForm>
               <Add
