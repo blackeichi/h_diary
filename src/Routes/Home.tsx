@@ -102,7 +102,7 @@ const Menu = styled(motion.div)<{ size: string }>`
   height: 100%;
   border-right: 1px solid lightgray;
   position: absolute;
-  background-color: white;
+  background-color: ${(props) => props.theme.lightBlue};
   z-index: 3;
 `;
 const MenuList = styled.h1`
@@ -185,6 +185,7 @@ export const Home = () => {
       text,
       createdAt: Date.now(),
       user: {
+        userId: user?.uid,
         email: user?.email,
         displayName: user?.displayName,
       },
@@ -248,9 +249,14 @@ export const Home = () => {
         <ContentBox>
           {(size === "Web" || open) && (
             <Menu
-              initial={size === "Web" ? { scaleX: 1 } : { scaleX: 0 }}
-              animate={size === "Web" ? {} : { scaleX: open ? 1 : 0 }}
+              initial={size === "Web" ? { scaleX: 1 } : { scaleX: 0, x: -200 }}
+              animate={
+                size === "Web"
+                  ? {}
+                  : { scaleX: open ? 1 : 0, x: open ? 0 : -200 }
+              }
               size={size}
+              transition={{ type: "linear" }}
             >
               <MenuList>메모장</MenuList>
             </Menu>
@@ -271,10 +277,13 @@ export const Home = () => {
                 onSubmit={onSubmit}
                 onChange={onChange}
                 size={size}
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: write ? 1 : 0 }}
+                initial={{ scaleX: 0, opacity: 0 }}
+                animate={{ scaleX: write ? 1 : 0, opacity: write ? 1 : 0 }}
+                onBlur={() => {
+                  setWrite(false);
+                }}
               >
-                <InputText defaultValue={text} />
+                <InputText value={text} />
                 <TextBtn>보내기</TextBtn>
               </TextForm>
               <Add

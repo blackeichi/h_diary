@@ -2,7 +2,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import React, { useEffect, useState } from "react";
 import { FreeMode, Scrollbar, Mousewheel } from "swiper";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 
 import "swiper/css";
 import "swiper/css/free-mode";
@@ -19,13 +19,12 @@ type TText = {
 export const Message = () => {
   const [text, setText] = useState([] as any);
   const getText = async () => {
-    const dbText = await getDocs(collection(dbService, "memo"));
-    dbText.forEach((doc) => {
-      const newText = {
+    const dbText = await onSnapshot(collection(dbService, "memo"), (col) => {
+      const newText = col.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
-      };
-      setText((prev: any) => [newText, ...prev]);
+      }));
+      setText(newText);
     });
   };
   useEffect(() => {
