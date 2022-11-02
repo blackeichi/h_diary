@@ -8,9 +8,11 @@ import { motion } from "framer-motion";
 import React, { useState } from "react";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { authService } from "../fbase";
+import { authService, dbService } from "../fbase";
 import { resizeState } from "../utils/atom";
 import { FlexBox } from "../utils/Styled";
+import { collection, addDoc } from "firebase/firestore";
+import { Message } from "../Coponents/Message";
 
 const Box = styled.div`
   display: flex;
@@ -28,6 +30,7 @@ const Container = styled.div<{ size: string }>`
   max-height: 800px;
   background-color: white;
   border-radius: 25px;
+  overflow: hidden;
 `;
 const Header = styled.div`
   width: 100%;
@@ -92,6 +95,7 @@ const ContentBox = styled.div`
   height: 90%;
   display: flex;
   position: relative;
+  overflow: hidden;
 `;
 const Menu = styled(motion.div)<{ size: string }>`
   width: 250px;
@@ -99,7 +103,7 @@ const Menu = styled(motion.div)<{ size: string }>`
   border-right: 1px solid lightgray;
   position: absolute;
   background-color: white;
-  z-index: 1;
+  z-index: 3;
 `;
 const MenuList = styled.h1`
   cursor: pointer;
@@ -107,9 +111,13 @@ const MenuList = styled.h1`
 const Content = styled.div`
   width: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   position: relative;
   font-family: "MonoplexKR-Regular";
+`;
+const SendBox = styled.div`
+  z-index: 2;
 `;
 const TextForm = styled(motion.form)<{ size: string }>`
   width: ${(props) => (props.size === "Small" ? "250px" : "400px")};
@@ -164,6 +172,26 @@ export const Home = () => {
   const date = new Date();
   const [write, setWrite] = useState(false);
   const openWrite = () => setWrite(!write);
+  const [text, setText] = useState("");
+  const onChange = (event: any) => {
+    const {
+      target: { value },
+    } = event;
+    setText(value);
+  };
+  const onSubmit = async (event: any) => {
+    event.preventDefault();
+    await addDoc(collection(dbService, "memo"), {
+      text,
+      createdAt: Date.now(),
+      user: {
+        email: user?.email,
+        displayName: user?.displayName,
+      },
+    });
+    setText("");
+  };
+  console.log(user);
   return (
     <Box>
       <Container size={size}>
@@ -220,28 +248,33 @@ export const Home = () => {
         <ContentBox>
           {(size === "Web" || open) && (
             <Menu
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: open ? 1 : 0 }}
+              initial={size === "Web" ? { scaleX: 1 } : { scaleX: 0 }}
+              animate={size === "Web" ? {} : { scaleX: open ? 1 : 0 }}
               size={size}
             >
               <MenuList>메모장</MenuList>
             </Menu>
           )}
           <Content>
-            <div
+            <SendBox
               style={{
                 display: "flex",
                 width: "100%",
                 alignItems: "center",
                 justifyContent: "center",
+                position: "fixed",
+                right: 0,
+                bottom: size === "Small" ? "5%" : "13%",
               }}
             >
               <TextForm
+                onSubmit={onSubmit}
+                onChange={onChange}
                 size={size}
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: write ? 1 : 0 }}
               >
-                <InputText />
+                <InputText defaultValue={text} />
                 <TextBtn>보내기</TextBtn>
               </TextForm>
               <Add
@@ -252,7 +285,8 @@ export const Home = () => {
               >
                 <FontAwesomeIcon icon={write ? faXmark : faPlus} />
               </Add>
-            </div>
+            </SendBox>
+            <Message />
           </Content>
         </ContentBox>
       </Container>
