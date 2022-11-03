@@ -17,6 +17,7 @@ const Wrapper = styled.div`
   justify-content: center;
   border-bottom: 2px solid lightgray;
   position: relative;
+  padding: 30px 0;
 `;
 const Img = styled.img`
   min-width: 200px;
@@ -34,11 +35,13 @@ const CursorBox = styled.div``;
 const UserBox = styled.div`
   display: flex;
   align-items: center;
+  gap: 5px;
 `;
 const Avatar = styled.img``;
 const Anony = styled.div`
   width: 30px;
   height: 30px;
+  font-size: 15px;
   background-color: gray;
   color: white;
   display: flex;
@@ -60,7 +63,7 @@ export const Message: React.FC<Interface> = ({ text, user }) => {
   console.log(date);
   return (
     <Wrapper key={text.id}>
-      <ColBox>
+      <ColBox style={{ gap: "15px" }}>
         <FlexBox
           style={{ justifyContent: "space-between", alignItems: "center" }}
         >
@@ -80,8 +83,7 @@ export const Message: React.FC<Interface> = ({ text, user }) => {
             {date.getFullYear()}.{date.getMonth() + 1}.{date.getDate()}
           </Username>
         </FlexBox>
-
-        {text.attachmentUrl && <Img src={text.attachmentUrl} />}
+        {text.attachmentUrl ? <Img src={text.attachmentUrl} /> : <Img />}
         <Text>{text.text}</Text>
       </ColBox>
       {text.user.userId === user.uid && (
