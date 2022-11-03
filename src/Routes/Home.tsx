@@ -15,7 +15,7 @@ import { FlexBox } from "../utils/Styled";
 import { collection, addDoc } from "firebase/firestore";
 import { Message } from "../Coponents/Message";
 import { v4 as uuidv4 } from "uuid";
-import { ref, uploadString } from "firebase/storage";
+import { ref, uploadString, getDownloadURL } from "firebase/storage";
 
 const Box = styled.div`
   display: flex;
@@ -130,8 +130,8 @@ const TextForm = styled(motion.form)<{ size: string }>`
   align-items: center;
 `;
 const Img = styled.img`
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
 `;
 const InputText = styled.input`
@@ -207,11 +207,18 @@ export const Home = () => {
   const onSubmit = async (event: any) => {
     event.preventDefault();
     const fileRef = ref(storageService, `${user?.uid}/${uuidv4()}`);
-    const response = await uploadString(fileRef, attachment, "data_url");
-    console.log(response);
+    let attachmentUrl = "";
+    const response = await uploadString(fileRef, attachment, "data_url").then(
+      (snapshot) => {
+        console.log("Uploading!!");
+      }
+    );
+    attachmentUrl = await getDownloadURL(fileRef);
+    console.log(attachmentUrl);
     await addDoc(collection(dbService, "memo"), {
       text,
       createdAt: Date.now(),
+      attachmentUrl,
       user: {
         userId: user?.uid,
         email: user?.email,
@@ -219,6 +226,7 @@ export const Home = () => {
       },
     });
     setText("");
+    setAttachment("");
   };
   return (
     <Box>
@@ -284,70 +292,70 @@ export const Home = () => {
               }
               size={size}
               transition={{ type: "linear" }}
+              onClick={() => {
+                setWrite(false);
+              }}
             >
               <MenuList>메모장</MenuList>
             </Menu>
           )}
-          <Content>
-            <SendBox
-              style={{
-                display: "flex",
-                width: "100%",
-                alignItems: "center",
-                justifyContent: "center",
-                position: "fixed",
-                right: 0,
-                bottom: size === "Small" ? "5%" : "13%",
-              }}
-            >
-              <TextForm
-                onSubmit={onSubmit}
-                size={size}
-                initial={{ scaleX: 0, opacity: 0 }}
-                animate={{ scaleX: write ? 1 : 0, opacity: write ? 1 : 0 }}
-                onBlur={() => {
-                  setWrite(false);
-                }}
-              >
-                <label
-                  htmlFor="photo"
-                  style={{
-                    position: "absolute",
-                    left: "3px",
-                    cursor: "pointer",
-                  }}
-                >
-                  {attachment ? (
-                    <Img src={attachment} />
-                  ) : (
-                    <FontAwesomeIcon
-                      size="2xl"
-                      color={"white"}
-                      icon={faImage}
-                    />
-                  )}
-                </label>
-                <input
-                  id="photo"
-                  type="file"
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  onChange={onFileChange}
-                />
-                <InputText onChange={onChange} value={text} />
-                <TextBtn>보내기</TextBtn>
-              </TextForm>
-              <Add
-                whileHover={{ scale: 1.1 }}
-                initial={{ x: 0 }}
-                animate={{ x: write ? (size === "Small" ? 150 : 225) : 0 }}
-                onClick={openWrite}
-              >
-                <FontAwesomeIcon icon={write ? faXmark : faPlus} />
-              </Add>
-            </SendBox>
+          <Content
+            onClick={() => {
+              setWrite(false);
+            }}
+          >
             <Message />
           </Content>
+          <SendBox
+            style={{
+              display: "flex",
+              width: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+              position: "fixed",
+              right: 0,
+              bottom: size === "Small" ? "5%" : "13%",
+            }}
+          >
+            <TextForm
+              onSubmit={onSubmit}
+              size={size}
+              initial={{ scaleX: 0, opacity: 0 }}
+              animate={{ scaleX: write ? 1 : 0, opacity: write ? 1 : 0 }}
+            >
+              <label
+                htmlFor="photo"
+                style={{
+                  position: "absolute",
+                  left: "3px",
+                  cursor: "pointer",
+                }}
+              >
+                {attachment ? (
+                  <Img src={attachment} />
+                ) : (
+                  <FontAwesomeIcon size="2xl" color={"white"} icon={faImage} />
+                )}
+              </label>
+              <input
+                id="photo"
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={onFileChange}
+              />
+              <InputText onChange={onChange} value={text} />
+              <TextBtn>보내기</TextBtn>
+            </TextForm>
+            <Add
+              whileHover={{ scale: 1.1 }}
+              initial={{ x: 0 }}
+              animate={{ x: write ? (size === "Small" ? 150 : 225) : 0 }}
+              onClick={openWrite}
+            >
+              <FontAwesomeIcon icon={write ? faXmark : faPlus} />
+            </Add>
+          </SendBox>
         </ContentBox>
       </Container>
     </Box>
