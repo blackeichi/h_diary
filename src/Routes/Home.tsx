@@ -208,13 +208,10 @@ export const Home = () => {
     event.preventDefault();
     const fileRef = ref(storageService, `${user?.uid}/${uuidv4()}`);
     let attachmentUrl = "";
-    const response = await uploadString(fileRef, attachment, "data_url").then(
-      (snapshot) => {
-        console.log("Uploading!!");
-      }
-    );
+    await uploadString(fileRef, attachment, "data_url").then((snapshot) => {
+      console.log("Uploading!!");
+    });
     attachmentUrl = await getDownloadURL(fileRef);
-    console.log(attachmentUrl);
     await addDoc(collection(dbService, "memo"), {
       text,
       createdAt: Date.now(),
@@ -304,7 +301,7 @@ export const Home = () => {
               setWrite(false);
             }}
           >
-            <Message />
+            <Message user={user} />
           </Content>
           <SendBox
             style={{
