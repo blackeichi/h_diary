@@ -1,78 +1,102 @@
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import React, { FC, useEffect, useState } from "react";
-import { FreeMode, Scrollbar, Mousewheel } from "swiper";
-import { collection, onSnapshot } from "firebase/firestore";
-
-import "swiper/css";
-import "swiper/css/free-mode";
-import "swiper/css/scrollbar";
-import { dbService } from "../fbase";
 import styled from "styled-components";
-import { faBan, faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBan,
+  faPen,
+  faTrash,
+  faUserAlt,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ColBox, FlexBox } from "../utils/Styled";
+import { TText } from "./MessageBox";
+import React from "react";
 
-const Wrapper = styled.div``;
-const Img = styled.img``;
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 2px solid lightgray;
+  position: relative;
+`;
+const Img = styled.img`
+  min-width: 200px;
+  width: 30vw;
+  border-radius: 20px;
+`;
 const Text = styled.h1``;
-const Menu = styled.div``;
+const Menu = styled.div`
+  display: flex;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+`;
 const CursorBox = styled.div``;
-type TText = {
-  createdAt: number;
-  id: string;
-  attachmentUrl: string;
-  text: string;
-  user: { displayName: any; email: string; userId: string };
-};
-type Inter = {
+const UserBox = styled.div`
+  display: flex;
+  align-items: center;
+`;
+const Avatar = styled.img``;
+const Anony = styled.div`
+  width: 30px;
+  height: 30px;
+  background-color: gray;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+`;
+const Username = styled.h1`
+  font-size: 12px;
+`;
+
+type Interface = {
+  text: TText;
   user: any;
 };
 
-export const Message: React.FC<Inter> = ({ user }) => {
-  const [text, setText] = useState([] as any);
-  const getText = async () => {
-    const dbText = await onSnapshot(collection(dbService, "memo"), (col) => {
-      const newText = col.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
-      setText(newText);
-    });
-  };
-  useEffect(() => {
-    getText();
-  }, []);
-  console.log(text);
+export const Message: React.FC<Interface> = ({ text, user }) => {
+  const date = new Date(text.createdAt);
+  console.log(date);
   return (
-    <Swiper
-      direction={"vertical"}
-      slidesPerView={"auto"}
-      freeMode={true}
-      scrollbar={true}
-      mousewheel={true}
-      modules={[FreeMode, Scrollbar, Mousewheel]}
-    >
-      <SwiperSlide>
-        {text.map((tex: TText) => (
-          <Wrapper key={tex.id}>
-            <Img src={tex.attachmentUrl} />
-            <Text>{tex.text}</Text>
-            {tex.user.userId === user.uid && (
-              <Menu>
-                <CursorBox>
-                  <FontAwesomeIcon icon={faTrash} />
-                </CursorBox>
-                <CursorBox>
-                  <FontAwesomeIcon icon={faBan} />
-                </CursorBox>
-                <CursorBox>
-                  <FontAwesomeIcon icon={faPen} />
-                </CursorBox>
-              </Menu>
+    <Wrapper key={text.id}>
+      <ColBox>
+        <FlexBox
+          style={{ justifyContent: "space-between", alignItems: "center" }}
+        >
+          <UserBox>
+            {user.photoURL ? (
+              <Avatar src={user.photoURL} />
+            ) : (
+              <Anony>
+                <FontAwesomeIcon icon={faUserAlt} />
+              </Anony>
             )}
-          </Wrapper>
-        ))}
-      </SwiperSlide>
-    </Swiper>
+            <Username>
+              {user.displayName ? user.displayName : user.email}
+            </Username>
+          </UserBox>
+          <Username>
+            {date.getFullYear()}.{date.getMonth() + 1}.{date.getDate()}
+          </Username>
+        </FlexBox>
+
+        {text.attachmentUrl && <Img src={text.attachmentUrl} />}
+        <Text>{text.text}</Text>
+      </ColBox>
+      {text.user.userId === user.uid && (
+        <Menu>
+          <CursorBox>
+            <FontAwesomeIcon icon={faTrash} />
+          </CursorBox>
+          <CursorBox>
+            <FontAwesomeIcon icon={faBan} />
+          </CursorBox>
+          <CursorBox>
+            <FontAwesomeIcon icon={faPen} />
+          </CursorBox>
+        </Menu>
+      )}
+    </Wrapper>
   );
 };

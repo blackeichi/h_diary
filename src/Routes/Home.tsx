@@ -13,7 +13,7 @@ import { authService, dbService, storageService } from "../fbase";
 import { resizeState } from "../utils/atom";
 import { FlexBox } from "../utils/Styled";
 import { collection, addDoc } from "firebase/firestore";
-import { Message } from "../Coponents/Message";
+import { MessageBox } from "../Coponents/MessageBox";
 import { v4 as uuidv4 } from "uuid";
 import { ref, uploadString, getDownloadURL } from "firebase/storage";
 
@@ -301,7 +301,7 @@ export const Home = () => {
               setWrite(false);
             }}
           >
-            <Message user={user} />
+            <MessageBox user={user} />
           </Content>
           <SendBox
             style={{
