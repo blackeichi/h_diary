@@ -6,6 +6,9 @@ import { TText } from "./MessageBox";
 import React from "react";
 import { resizeState } from "../utils/atom";
 import { useRecoilValue } from "recoil";
+import { dbService, storageService } from "../fbase";
+import { deleteDoc, doc } from "firebase/firestore";
+import { deleteObject, ref } from "firebase/storage";
 
 const Wrapper = styled.div`
   display: flex;
@@ -59,6 +62,14 @@ type Interface = {
 export const Message: React.FC<Interface> = ({ text, user }) => {
   const date = new Date(text.createdAt);
   const size = useRecoilValue(resizeState);
+  const onDeleteClick = async () => {
+    const ok = window.confirm("정말 삭제하시겠습니까? 😮");
+    if (ok) {
+      window.confirm("삭제되었습니다. 👏");
+      await deleteDoc(doc(dbService, "memo", text.id));
+      await deleteObject(ref(storageService, text.attachmentUrl));
+    }
+  };
   return (
     <Wrapper key={text.id}>
       <ColBox
@@ -106,7 +117,7 @@ export const Message: React.FC<Interface> = ({ text, user }) => {
           }}
         >
           <Text>{text.text}</Text>
-          <CursorBox>
+          <CursorBox onClick={onDeleteClick}>
             <FontAwesomeIcon icon={faTrash} />
           </CursorBox>
         </FlexBox>

@@ -7,6 +7,8 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImage, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { menuOpenState, writeState } from "../utils/atom";
 
 const SendBox = styled.div`
   z-index: 2;
@@ -67,8 +69,12 @@ type Inter = {
 };
 
 export const SendInput: React.FC<Inter> = ({ size, user }) => {
-  const [write, setWrite] = useState(false);
-  const openWrite = () => setWrite(!write);
+  const [write, setWrite] = useRecoilState(writeState);
+  const setMenu = useSetRecoilState(menuOpenState);
+  const openWrite = () => {
+    setWrite(!write);
+    setMenu(false);
+  };
   const [text, setText] = useState("");
   const onChange = (event: any) => {
     const {
