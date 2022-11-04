@@ -120,7 +120,7 @@ export const Message: React.FC<Interface> = ({ text, user }) => {
         >
           <FlexBox style={{ alignItems: "center" }}>
             <Username style={{ marginRight: "5px", fontWeight: "bold" }}>
-              {text.user.displayName ? text.user.displayName : "User"}
+              {text.user.displayName ? text.user.displayName : text.user.email}
             </Username>
             <Text>{text.text}</Text>
           </FlexBox>

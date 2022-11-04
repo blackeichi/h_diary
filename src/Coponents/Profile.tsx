@@ -1,5 +1,6 @@
 import {
   faCheck,
+  faImage,
   faPen,
   faUser,
   faXmark,
@@ -18,6 +19,7 @@ const Box = styled.div`
   height: 100%;
   justify-content: center;
   align-items: center;
+  gap: 30px;
 `;
 const Anony = styled.div`
   width: 150px;
@@ -29,12 +31,13 @@ const Anony = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 50%;
+  position: relative;
 `;
 const Username = styled.div`
   background-color: white;
   color: ${(props) => props.theme.blackColr};
   border: 3px solid ${(props) => props.theme.blackColr};
-  width: 200px;
+  width: 220px;
   height: 40px;
   border-radius: 20px;
   display: flex;
@@ -93,6 +96,9 @@ export const Profile: React.FC<Interface> = ({ user }) => {
   return (
     <Box>
       <Anony>
+        <Icon style={{ right: "20px", top: "5px", padding: "5px" }}>
+          <FontAwesomeIcon color="white" icon={faImage} />
+        </Icon>
         <FontAwesomeIcon icon={faUser} />
       </Anony>
       <Username>

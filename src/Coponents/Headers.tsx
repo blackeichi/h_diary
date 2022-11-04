@@ -128,7 +128,9 @@ export const Headers: React.FC<Interface> = ({ size, user }) => {
               : date.getMinutes()}
           </Text>
         </FlexBox>
-        {size !== "Small" && <Text>{user?.email}</Text>}
+        {size !== "Small" && (
+          <Text>{user?.displayName ? user?.displayName : user?.email}</Text>
+        )}
         <Icon whileHover={{ scale: 1.1 }} size={size} onClick={LogOut}>
           <FontAwesomeIcon icon={faRightFromBracket} />
         </Icon>
