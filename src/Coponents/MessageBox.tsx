@@ -1,8 +1,8 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import React, { FC, useEffect, useState } from "react";
-import { FreeMode, Scrollbar, Mousewheel } from "swiper";
-import { collection, onSnapshot } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import { FreeMode, Mousewheel, Scrollbar } from "swiper";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 
 import "swiper/css";
 import "swiper/css/free-mode";
@@ -25,13 +25,16 @@ type Inter = {
 export const MessageBox: React.FC<Inter> = ({ user }) => {
   const [text, setText] = useState([] as any);
   const getText = async () => {
-    const dbText = await onSnapshot(collection(dbService, "memo"), (col) => {
-      const newText = col.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
-      setText(newText);
-    });
+    await onSnapshot(
+      query(collection(dbService, "memo"), orderBy("createdAt", "desc")),
+      (col) => {
+        const newText = col.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setText(newText);
+      }
+    );
   };
   useEffect(() => {
     getText();
@@ -40,17 +43,18 @@ export const MessageBox: React.FC<Inter> = ({ user }) => {
   return (
     <Swiper
       direction={"vertical"}
-      slidesPerView={"auto"}
-      freeMode={true}
-      scrollbar={true}
+      scrollbar={{
+        hide: true,
+      }}
       mousewheel={true}
-      modules={[FreeMode, Scrollbar, Mousewheel]}
+      freeMode={true}
+      modules={[Scrollbar, Mousewheel, FreeMode]}
     >
-      <SwiperSlide>
-        {text.map((tex: TText) => (
+      {text.map((tex: TText) => (
+        <SwiperSlide key={tex.id}>
           <Message user={user} text={tex} />
-        ))}
-      </SwiperSlide>
+        </SwiperSlide>
+      ))}
     </Swiper>
   );
 };

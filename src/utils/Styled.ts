@@ -8,4 +8,5 @@ export const FlexBox = styled.div<{ Col?: boolean; gap?: number }>`
 export const ColBox = styled.div`
   display: flex;
   flex-direction: column;
+  height: 100%;
 `;

@@ -1,10 +1,4 @@
-import {
-  faComment,
-  faImage,
-  faPlus,
-  faRightFromBracket,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
+import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion } from "framer-motion";
 import React, { useState } from "react";
@@ -27,7 +21,7 @@ const Box = styled.div`
 `;
 const Container = styled.div<{ size: string }>`
   width: ${(props) => (props.size === "Small" ? "95%" : "90%")};
-  height: ${(props) => (props.size === "Small" ? "95vh" : "80vh")};
+  height: ${(props) => (props.size === "Small" ? "100vh" : "80vh")};
   max-width: 1400px;
   max-height: 800px;
   background-color: white;
@@ -37,7 +31,7 @@ const Container = styled.div<{ size: string }>`
 const Header = styled.div`
   width: 100%;
   height: 10%;
-  min-height: 80px;
+  min-height: 60px;
   background-color: ${(props) => props.theme.blueColr};
   border-top-left-radius: 25px;
   border-top-right-radius: 25px;
@@ -73,10 +67,10 @@ const ToggleBtn = styled(motion.div)<{ size: string }>`
   width: ${(props) => (props.size === "Mid" ? "4vw" : "24px")};
   height: ${(props) => (props.size === "Mid" ? "4vw" : "24px")};
 `;
-const Icon = styled.div<{ size: string }>`
+const Icon = styled(motion.div)<{ size: string }>`
   color: ${(props) => props.theme.blueColr};
   background-color: white;
-  padding: ${(props) => (props.size === "Mid" ? "1.5vw" : "10px")};
+  padding: ${(props) => (props.size === "Mid" ? "1.2vw" : "10px")};
   border-radius: 50%;
   font-size: ${(props) => (props.size === "Small" ? "15px" : "20px")};
   cursor: pointer;
@@ -185,7 +179,7 @@ export const Home = () => {
               </Text>
             </FlexBox>
             {size !== "Small" && <Text>{user?.email}</Text>}
-            <Icon size={size} onClick={LogOut}>
+            <Icon whileHover={{ scale: 1.1 }} size={size} onClick={LogOut}>
               <FontAwesomeIcon icon={faRightFromBracket} />
             </Icon>
           </HeaderContent>

@@ -1,14 +1,11 @@
 import styled from "styled-components";
-import {
-  faBan,
-  faPen,
-  faTrash,
-  faUserAlt,
-} from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faUserAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ColBox, FlexBox } from "../utils/Styled";
 import { TText } from "./MessageBox";
 import React from "react";
+import { resizeState } from "../utils/atom";
+import { useRecoilValue } from "recoil";
 
 const Wrapper = styled.div`
   display: flex;
@@ -17,21 +14,22 @@ const Wrapper = styled.div`
   justify-content: center;
   border-bottom: 2px solid lightgray;
   position: relative;
-  padding: 30px 0;
+  padding-bottom: 30px;
+  margin-top: 10px;
+  height: 100%;
+  box-sizing: border-box;
 `;
-const Img = styled.img`
-  min-width: 200px;
-  width: 30vw;
+const Img = styled.img<{ size?: string }>`
+  min-height: 250px;
+  height: 25vw;
+  max-height: 55vh;
+  max-width: 100%;
   border-radius: 20px;
 `;
 const Text = styled.h1``;
-const Menu = styled.div`
-  display: flex;
-  position: absolute;
-  top: 20px;
-  right: 20px;
+const CursorBox = styled.div`
+  cursor: pointer;
 `;
-const CursorBox = styled.div``;
 const UserBox = styled.div`
   display: flex;
   align-items: center;
@@ -60,12 +58,24 @@ type Interface = {
 
 export const Message: React.FC<Interface> = ({ text, user }) => {
   const date = new Date(text.createdAt);
-  console.log(date);
+  const size = useRecoilValue(resizeState);
   return (
     <Wrapper key={text.id}>
-      <ColBox style={{ gap: "15px" }}>
+      <ColBox
+        style={{
+          gap: size !== "Web" ? "0px" : "20px",
+          width: "100%",
+          maxWidth: "600px",
+          alignItems: "center",
+          justifyContent: size !== "Web" ? "space-between" : "center",
+        }}
+      >
         <FlexBox
-          style={{ justifyContent: "space-between", alignItems: "center" }}
+          style={{
+            width: "100%",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
         >
           <UserBox>
             {user.photoURL ? (
@@ -83,22 +93,24 @@ export const Message: React.FC<Interface> = ({ text, user }) => {
             {date.getFullYear()}.{date.getMonth() + 1}.{date.getDate()}
           </Username>
         </FlexBox>
-        {text.attachmentUrl ? <Img src={text.attachmentUrl} /> : <Img />}
-        <Text>{text.text}</Text>
-      </ColBox>
-      {text.user.userId === user.uid && (
-        <Menu>
+        {text.attachmentUrl ? (
+          <Img size={size} src={text.attachmentUrl} />
+        ) : (
+          <Img />
+        )}
+        <FlexBox
+          style={{
+            width: "100%",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Text>{text.text}</Text>
           <CursorBox>
             <FontAwesomeIcon icon={faTrash} />
           </CursorBox>
-          <CursorBox>
-            <FontAwesomeIcon icon={faBan} />
-          </CursorBox>
-          <CursorBox>
-            <FontAwesomeIcon icon={faPen} />
-          </CursorBox>
-        </Menu>
-      )}
+        </FlexBox>
+      </ColBox>
     </Wrapper>
   );
 };

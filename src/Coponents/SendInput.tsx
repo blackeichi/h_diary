@@ -12,7 +12,7 @@ const SendBox = styled.div`
   z-index: 2;
 `;
 const TextForm = styled(motion.form)<{ size: string }>`
-  width: ${(props) => (props.size === "Small" ? "250px" : "400px")};
+  width: ${(props) => (props.size === "Small" ? "200px" : "400px")};
   box-sizing: border-box;
   position: relative;
   display: flex;
@@ -35,18 +35,18 @@ const InputText = styled.input`
   border-radius: 10px;
   padding-left: 45px;
 `;
-const TextBtn = styled.button`
+const TextBtn = styled.button<{ size: string }>`
   height: 50px;
   position: absolute;
   background-color: transparent;
   border: none;
-  right: 20px;
+  right: ${(props) => (props.size === "Small" ? "5px" : "20px")};
   color: white;
   font-family: "MonoplexKR-Regular";
   cursor: pointer;
   font-weight: bold;
 `;
-const Add = styled(motion.h1)`
+const Add = styled(motion.h1)<{ size: string }>`
   font-size: 20px;
   font-weight: bold;
   background-color: ${(props) => props.theme.blackColr};
@@ -113,6 +113,7 @@ export const SendInput: React.FC<Inter> = ({ size, user }) => {
     });
     setText("");
     setAttachment("");
+    setWrite(false);
   };
   return (
     <SendBox
@@ -123,7 +124,7 @@ export const SendInput: React.FC<Inter> = ({ size, user }) => {
         justifyContent: "center",
         position: "fixed",
         right: 0,
-        bottom: size === "Small" ? "5%" : "13%",
+        bottom: size === "Small" ? "2%" : "6.5%",
       }}
     >
       <TextForm
@@ -154,13 +155,14 @@ export const SendInput: React.FC<Inter> = ({ size, user }) => {
           onChange={onFileChange}
         />
         <InputText onChange={onChange} value={text} />
-        <TextBtn>보내기</TextBtn>
+        <TextBtn size={size}>보내기</TextBtn>
       </TextForm>
       <Add
         whileHover={{ scale: 1.1 }}
         initial={{ x: 0 }}
-        animate={{ x: write ? (size === "Small" ? 150 : 225) : 0 }}
+        animate={{ x: write ? (size === "Small" ? 125 : 225) : 0 }}
         onClick={openWrite}
+        size={size}
       >
         <FontAwesomeIcon icon={write ? faXmark : faPlus} />
       </Add>
