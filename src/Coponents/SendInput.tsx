@@ -160,7 +160,7 @@ export const SendInput: React.FC<Inter> = ({ size, user }) => {
           style={{ display: "none" }}
           onChange={onFileChange}
         />
-        <InputText onChange={onChange} value={text} />
+        <InputText autoFocus={true} onChange={onChange} value={text} />
         <TextBtn size={size}>보내기</TextBtn>
       </TextForm>
       <Add

@@ -48,7 +48,7 @@ export const Menu: React.FC<Interface> = ({ size, open }) => {
         }}
         style={select === "message" ? { backgroundColor: "#f0fbff" } : {}}
       >
-        {select === "message" ? "📭" : "📫"} Message
+        {select === "message" ? "📭" : "📫"} Community
       </MenuList>
       <MenuList
         onClick={() => {

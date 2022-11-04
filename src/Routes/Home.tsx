@@ -7,6 +7,7 @@ import { MessageBox } from "../Coponents/MessageBox";
 import { SendInput } from "../Coponents/SendInput";
 import { Menu } from "../Coponents/Menu";
 import { Headers } from "../Coponents/Headers";
+import { Profile } from "../Coponents/Profile";
 
 const Box = styled.div`
   display: flex;
@@ -19,7 +20,7 @@ const Box = styled.div`
 `;
 const Container = styled.div<{ size: string }>`
   width: ${(props) => (props.size === "Small" ? "95%" : "90%")};
-  height: ${(props) => (props.size === "Small" ? "100vh" : "80vh")};
+  height: ${(props) => (props.size === "Small" ? "100vh" : "90vh")};
   max-width: 1400px;
   max-height: 800px;
   background-color: white;
@@ -62,6 +63,11 @@ export const Home = () => {
               </Content>
               <SendInput size={size} user={user} />
             </>
+          )}
+          {select === "profile" && (
+            <Content>
+              <Profile user={user} />
+            </Content>
           )}
         </ContentBox>
       </Container>

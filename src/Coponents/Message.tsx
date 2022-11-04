@@ -9,6 +9,7 @@ import { useRecoilValue } from "recoil";
 import { dbService, storageService } from "../fbase";
 import { deleteDoc, doc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
+import { motion } from "framer-motion";
 
 const Wrapper = styled.div`
   display: flex;
@@ -30,8 +31,9 @@ const Img = styled.img<{ size?: string }>`
   border-radius: 20px;
 `;
 const Text = styled.h1``;
-const CursorBox = styled.div`
+const CursorBox = styled(motion.div)`
   cursor: pointer;
+  color: ${(props) => props.theme.blackColr};
 `;
 const UserBox = styled.div`
   display: flex;
@@ -116,8 +118,13 @@ export const Message: React.FC<Interface> = ({ text, user }) => {
             alignItems: "center",
           }}
         >
-          <Text>{text.text}</Text>
-          <CursorBox onClick={onDeleteClick}>
+          <FlexBox style={{ alignItems: "center" }}>
+            <Username style={{ marginRight: "5px", fontWeight: "bold" }}>
+              {text.user.displayName ? text.user.displayName : "User"}
+            </Username>
+            <Text>{text.text}</Text>
+          </FlexBox>
+          <CursorBox whileHover={{ scale: 1.2 }} onClick={onDeleteClick}>
             <FontAwesomeIcon icon={faTrash} />
           </CursorBox>
         </FlexBox>
