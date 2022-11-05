@@ -11,6 +11,7 @@ import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { menuOpenState } from "../utils/atom";
 import { updateProfile } from "firebase/auth";
+import { motion } from "framer-motion";
 
 const Box = styled.div`
   display: flex;
@@ -66,7 +67,37 @@ const Icon = styled.button`
   border-radius: 50%;
   background-color: ${(props) => props.theme.blackColr};
 `;
+const Label = styled(motion.label)`
+  position: absolute;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  border-radius: 50%;
+  background-color: ${(props) => props.theme.blueColr};
+  right: 20px;
+  top: 5px;
+  padding: 5px;
+  font-size: 15px;
+`;
 const Text = styled.h1``;
+const Img = styled.img`
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+`;
+const Confirm = styled(motion.button)`
+  position: absolute;
+  font-size: 15px;
+  color: ${(props) => props.theme.blackColr};
+  background-color: white;
+  border: 3px solid ${(props) => props.theme.blackColr};
+  padding: 5px;
+  border-radius: 10px;
+  cursor: pointer;
+  bottom: 10px;
+  font-weight: bold;
+  box-sizing: border-box;
+`;
 
 type Interface = {
   user: any;
@@ -93,13 +124,44 @@ export const Profile: React.FC<Interface> = ({ user }) => {
     }
     setEdit(false);
   };
+  const [attachment, setAttachment] = useState("");
+  const onFileChange = (event: any) => {
+    const {
+      target: { files },
+    } = event;
+    const theFile = files[0];
+    const reader = new FileReader();
+    reader.onloadend = (finishedEvent) => {
+      const {
+        currentTarget: { result },
+      } = finishedEvent as any;
+      setAttachment(result);
+    };
+    reader.readAsDataURL(theFile);
+  };
   return (
     <Box>
       <Anony>
-        <Icon style={{ right: "20px", top: "5px", padding: "5px" }}>
-          <FontAwesomeIcon color="white" icon={faImage} />
-        </Icon>
-        <FontAwesomeIcon icon={faUser} />
+        <form>
+          <Label whileHover={{ scale: 1.1 }} htmlFor="photo">
+            <FontAwesomeIcon color="white" icon={faImage} />
+          </Label>
+          <input
+            id="photo"
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            onChange={onFileChange}
+          />
+        </form>
+        {attachment ? (
+          <>
+            <Img src={attachment} />
+            <Confirm whileHover={{ scale: 1.1 }}>저장</Confirm>
+          </>
+        ) : (
+          <FontAwesomeIcon icon={faUser} />
+        )}
       </Anony>
       <Username>
         {edit ? (
