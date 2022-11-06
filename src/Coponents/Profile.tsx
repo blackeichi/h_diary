@@ -12,6 +12,14 @@ import styled from "styled-components";
 import { menuOpenState } from "../utils/atom";
 import { updateProfile } from "firebase/auth";
 import { motion } from "framer-motion";
+import { storageService } from "../fbase";
+import { uuidv4 } from "@firebase/util";
+import {
+  ref,
+  uploadString,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 
 const Box = styled.div`
   display: flex;
@@ -124,6 +132,23 @@ export const Profile: React.FC<Interface> = ({ user }) => {
     }
     setEdit(false);
   };
+  const onChangePhoto = async (event: any) => {
+    event.preventDefault();
+    setMenu(false);
+    const fileRef = ref(storageService, `${user?.uid}/${uuidv4()}`);
+    let attachmentUrl = "";
+    if (attachment) {
+      await uploadString(fileRef, attachment, "data_url").then((snapshot) => {
+        console.log("Uploading!!");
+      });
+      attachmentUrl = await getDownloadURL(fileRef);
+    }
+    await deleteObject(ref(storageService, user.photoURL));
+    await updateProfile(user, {
+      photoURL: attachmentUrl,
+    });
+    setAttachment("");
+  };
   const [attachment, setAttachment] = useState("");
   const onFileChange = (event: any) => {
     const {
@@ -157,8 +182,12 @@ export const Profile: React.FC<Interface> = ({ user }) => {
         {attachment ? (
           <>
             <Img src={attachment} />
-            <Confirm whileHover={{ scale: 1.1 }}>저장</Confirm>
+            <Confirm onClick={onChangePhoto} whileHover={{ scale: 1.1 }}>
+              저장
+            </Confirm>
           </>
+        ) : user?.photoURL ? (
+          <Img src={user?.photoURL} />
         ) : (
           <FontAwesomeIcon icon={faUser} />
         )}
