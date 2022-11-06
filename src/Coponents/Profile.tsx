@@ -12,7 +12,7 @@ import styled from "styled-components";
 import { menuOpenState } from "../utils/atom";
 import { updateProfile } from "firebase/auth";
 import { motion } from "framer-motion";
-import { storageService } from "../fbase";
+import { authService, storageService } from "../fbase";
 import { uuidv4 } from "@firebase/util";
 import {
   ref,
@@ -42,7 +42,7 @@ const Anony = styled.div`
   border-radius: 50%;
   position: relative;
 `;
-const Username = styled.div`
+const Username = styled(motion.div)`
   background-color: white;
   color: ${(props) => props.theme.blackColr};
   border: 3px solid ${(props) => props.theme.blackColr};
@@ -65,9 +65,9 @@ const EditInput = styled.input`
   color: ${(props) => props.theme.blackColr};
 `;
 
-const Icon = styled.button`
+const Icon = styled(motion.button)`
   position: absolute;
-  right: -38px;
+  right: -42px;
   cursor: pointer;
   background-color: transparent;
   border: none;
@@ -204,7 +204,7 @@ export const Profile: React.FC<Interface> = ({ user }) => {
                 autoFocus={true}
                 onChange={onChange}
               />
-              <Icon>
+              <Icon whileHover={{ scale: 1.1 }}>
                 <FontAwesomeIcon color="white" icon={faCheck} />
               </Icon>
             </form>
@@ -224,6 +224,7 @@ export const Profile: React.FC<Interface> = ({ user }) => {
           <>
             <Text>{newDisplayName}</Text>
             <Icon
+              whileHover={{ scale: 1.1 }}
               onClick={() => {
                 setEdit(true);
                 setMenu(false);
@@ -233,6 +234,17 @@ export const Profile: React.FC<Interface> = ({ user }) => {
             </Icon>
           </>
         )}
+      </Username>
+      <Username
+        whileHover={{ scale: 1.05 }}
+        style={{
+          backgroundColor: "#32353F",
+          color: "white",
+          cursor: "pointer",
+        }}
+        onClick={() => authService.signOut()}
+      >
+        <Text>로그아웃</Text>
       </Username>
     </Box>
   );
