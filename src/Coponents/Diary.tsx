@@ -3,9 +3,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   addDoc,
   collection,
+  doc,
   onSnapshot,
   orderBy,
   query,
+  setDoc,
+  where,
 } from "firebase/firestore";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -143,14 +146,16 @@ type Tdiary = {
   color: string;
   createdAt: number;
   title: string;
-  text?: string;
+  text?: [];
   user: {
     displayName: string;
     userId: string;
   };
+  id: string;
 };
 export const Diary: React.FC<Inter> = ({ user }) => {
   const [open, setOpen] = useState(false);
+  const [openMemo, setOpenMemo] = useState(false);
   const size = useRecoilValue(resizeState);
   const colors = [
     "#f2f2f2",
@@ -165,6 +170,8 @@ export const Diary: React.FC<Inter> = ({ user }) => {
   ];
   const [color, setColor] = useState("#f2f2f2");
   const [title, setTitle] = useState("");
+  const [clicked, setClicked] = useState<Tdiary>();
+  const [text, setText] = useState([]);
   const onSubmit = async (event: any) => {
     event.preventDefault();
     if (!title) {
@@ -175,10 +182,8 @@ export const Diary: React.FC<Inter> = ({ user }) => {
       title,
       createdAt: Date.now(),
       color,
-      user: {
-        userId: user?.uid,
-        displayName: user?.displayName,
-      },
+      userId: user?.uid,
+      displayName: user?.displayName,
     });
     setTitle("");
     setOpen(false);
@@ -189,10 +194,25 @@ export const Diary: React.FC<Inter> = ({ user }) => {
     } = event;
     setTitle(value);
   };
+  const onSubmitText = async (event: any) => {
+    event.preventDefault();
+    if (clicked?.id) {
+      await setDoc(doc(dbService, "diary", clicked?.id), { ...clicked, text });
+    }
+    setText([]);
+    setOpenMemo(false);
+  };
+  const onChangeText = (event: any) => {
+    const {
+      target: { value },
+    } = event;
+    const newText = value.split("\n");
+    setText(newText);
+  };
   const [diary, setDiary] = useState([] as any);
   const getDiary = async () => {
     await onSnapshot(
-      query(collection(dbService, "diary"), orderBy("createdAt", "desc")),
+      query(collection(dbService, "diary"), where("userId", "==", user?.uid)),
       (col) => {
         const newDiary = col.docs.map((doc) => ({
           id: doc.id,
@@ -212,6 +232,10 @@ export const Diary: React.FC<Inter> = ({ user }) => {
           whileHover={{ scale: 1.03 }}
           key={note.createdAt}
           size={size}
+          onClick={() => {
+            setOpenMemo(true);
+            setClicked(note);
+          }}
         >
           <Note style={{ backgroundColor: note.color }} size={size}>
             <NoteTitle>{note.title}</NoteTitle>
@@ -266,6 +290,32 @@ export const Diary: React.FC<Inter> = ({ user }) => {
               setTitle("");
             }}
           ></Overlay>
+        </CreateBox>
+      )}
+      {openMemo && (
+        <CreateBox>
+          <FormBox size={size}>
+            <Form onSubmit={onSubmitText}>
+              <h1>
+                {text.map((tex) => (
+                  <h1>{tex}</h1>
+                ))}
+              </h1>
+              <textarea
+                onChange={onChangeText}
+                value="안녕하세요. 
+              저는"
+              />
+              <Btn>완료</Btn>
+            </Form>
+          </FormBox>
+          <Overlay
+            style={openMemo ? { display: "block" } : { display: "none" }}
+            onClick={() => {
+              setOpenMemo(false);
+              setText([]);
+            }}
+          />
         </CreateBox>
       )}
     </Box>
