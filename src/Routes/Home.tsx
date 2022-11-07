@@ -1,5 +1,5 @@
 import React from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { authService } from "../fbase";
 import { menuOpenState, resizeState, selectState } from "../utils/atom";
@@ -8,6 +8,7 @@ import { SendInput } from "../Coponents/SendInput";
 import { Menu } from "../Coponents/Menu";
 import { Headers } from "../Coponents/Headers";
 import { Profile } from "../Coponents/Profile";
+import { Diary } from "../Coponents/Diary";
 
 const Box = styled.div`
   display: flex;
@@ -47,7 +48,7 @@ const Content = styled.div`
 
 export const Home = () => {
   const size = useRecoilValue(resizeState);
-  const open = useRecoilValue(menuOpenState);
+  const [open, setOpen] = useRecoilState(menuOpenState);
   const user = authService.currentUser;
   const select = useRecoilValue(selectState);
   return (
@@ -56,19 +57,17 @@ export const Home = () => {
         <Headers size={size} user={user} />
         <ContentBox>
           {(size === "Web" || open) && <Menu size={size} open={open} />}
-          {select === "message" && (
-            <>
-              <Content>
+          <Content onClick={() => setOpen(false)}>
+            {select === "message" && (
+              <>
                 <MessageBox user={user} />
-              </Content>
-              <SendInput size={size} user={user} />
-            </>
-          )}
-          {select === "profile" && (
-            <Content>
-              <Profile user={user} />
-            </Content>
-          )}
+
+                <SendInput size={size} user={user} />
+              </>
+            )}
+            {select === "profile" && <Profile user={user} />}
+            {select === "diary" && <Diary user={user} />}
+          </Content>
         </ContentBox>
       </Container>
     </Box>

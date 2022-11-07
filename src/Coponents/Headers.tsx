@@ -2,10 +2,10 @@ import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion } from "framer-motion";
 import React from "react";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { authService } from "../fbase";
-import { menuOpenState, writeState } from "../utils/atom";
+import { ChangeNickname, menuOpenState, writeState } from "../utils/atom";
 import { FlexBox } from "../utils/Styled";
 
 const Header = styled.div`
@@ -83,6 +83,7 @@ export const Headers: React.FC<Interface> = ({ size, user }) => {
     setWrite(false);
   };
   const date = new Date();
+  const newNick = useRecoilValue(ChangeNickname);
   return (
     <Header>
       {size !== "Web" && (
@@ -129,7 +130,13 @@ export const Headers: React.FC<Interface> = ({ size, user }) => {
           </Text>
         </FlexBox>
         {size !== "Small" && (
-          <Text>{user?.displayName ? user?.displayName : user?.email}</Text>
+          <Text>
+            {newNick
+              ? newNick
+              : user?.displayName
+              ? user?.displayName
+              : user?.email}
+          </Text>
         )}
         <Icon whileHover={{ scale: 1.1 }} size={size} onClick={LogOut}>
           <FontAwesomeIcon icon={faRightFromBracket} />

@@ -10,6 +10,8 @@ import "swiper/css/scrollbar";
 import { dbService } from "../fbase";
 
 import { Message } from "./Message";
+import { useSetRecoilState } from "recoil";
+import { writeState } from "../utils/atom";
 
 export type TText = {
   createdAt: number;
@@ -23,6 +25,7 @@ type Inter = {
 };
 
 export const MessageBox: React.FC<Inter> = ({ user }) => {
+  const setWrite = useSetRecoilState(writeState);
   const [text, setText] = useState([] as any);
   const getText = async () => {
     await onSnapshot(
@@ -39,7 +42,6 @@ export const MessageBox: React.FC<Inter> = ({ user }) => {
   useEffect(() => {
     getText();
   }, []);
-  console.log(user);
   return (
     <Swiper
       direction={"vertical"}
@@ -49,6 +51,7 @@ export const MessageBox: React.FC<Inter> = ({ user }) => {
       mousewheel={true}
       freeMode={true}
       modules={[Scrollbar, Mousewheel, FreeMode]}
+      onClick={() => setWrite(false)}
     >
       {text.map((tex: TText) => (
         <SwiperSlide key={tex.id}>

@@ -40,7 +40,11 @@ const UserBox = styled.div`
   align-items: center;
   gap: 5px;
 `;
-const Avatar = styled.img``;
+const Avatar = styled.img`
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+`;
 const Anony = styled.div`
   width: 30px;
   height: 30px;
@@ -92,7 +96,9 @@ export const Message: React.FC<Interface> = ({ text, user }) => {
         >
           <UserBox>
             {user.photoURL ? (
-              <Avatar src={user.photoURL} />
+              <Anony>
+                <Avatar src={user.photoURL} />
+              </Anony>
             ) : (
               <Anony>
                 <FontAwesomeIcon icon={faUserAlt} />
@@ -109,7 +115,12 @@ export const Message: React.FC<Interface> = ({ text, user }) => {
         {text.attachmentUrl ? (
           <Img size={size} src={text.attachmentUrl} />
         ) : (
-          <Img />
+          <Img
+            size={size}
+            src={
+              "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png?20200912122019"
+            }
+          />
         )}
         <FlexBox
           style={{

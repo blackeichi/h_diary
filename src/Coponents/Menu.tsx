@@ -43,19 +43,29 @@ export const Menu: React.FC<Interface> = ({ size, open }) => {
     >
       <MenuList
         onClick={() => {
+          setSelect("diary");
+          setWrite(false);
+        }}
+        style={select === "diary" ? { backgroundColor: "#edf7fa" } : {}}
+      >
+        {select === "diary" ? "📝" : "📄"} Memo
+      </MenuList>
+      <MenuList
+        onClick={() => {
           setSelect("message");
           setWrite(false);
         }}
-        style={select === "message" ? { backgroundColor: "#f0fbff" } : {}}
+        style={select === "message" ? { backgroundColor: "#edf7fa" } : {}}
       >
         {select === "message" ? "📭" : "📫"} Community
       </MenuList>
+
       <MenuList
         onClick={() => {
           setSelect("profile");
           setWrite(false);
         }}
-        style={select === "profile" ? { backgroundColor: "#f0fbff" } : {}}
+        style={select === "profile" ? { backgroundColor: "#edf7fa" } : {}}
       >
         {select === "profile" ? "🤗" : "😎"} Profile
       </MenuList>

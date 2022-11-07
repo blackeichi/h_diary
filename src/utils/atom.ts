@@ -7,7 +7,7 @@ export const resizeState = atom({
 
 export const selectState = atom({
   key: "select",
-  default: "message" || "profile",
+  default: "diary" || "message" || "profile",
 });
 export const writeState = atom({
   key: "write",
@@ -16,4 +16,8 @@ export const writeState = atom({
 export const menuOpenState = atom({
   key: "menu",
   default: false,
+});
+export const ChangeNickname = atom({
+  key: "nickname",
+  default: "",
 });

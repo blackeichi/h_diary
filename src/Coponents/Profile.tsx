@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { menuOpenState } from "../utils/atom";
+import { ChangeNickname, menuOpenState } from "../utils/atom";
 import { updateProfile } from "firebase/auth";
 import { motion } from "framer-motion";
 import { authService, storageService } from "../fbase";
@@ -117,6 +117,7 @@ export const Profile: React.FC<Interface> = ({ user }) => {
   const [newDisplayName, setDisplayName] = useState(
     user.displayName === null ? "User" : user.displayName
   );
+  const setNick = useSetRecoilState(ChangeNickname);
   const onChange = (event: any) => {
     const {
       target: { value },
@@ -131,6 +132,7 @@ export const Profile: React.FC<Interface> = ({ user }) => {
       });
     }
     setEdit(false);
+    setNick(newDisplayName);
   };
   const onChangePhoto = async (event: any) => {
     event.preventDefault();

@@ -99,6 +99,10 @@ export const SendInput: React.FC<Inter> = ({ size, user }) => {
   };
   const onSubmit = async (event: any) => {
     event.preventDefault();
+    if (!text && !attachment) {
+      window.alert("내용을 입력해주세요! 🤔");
+      return;
+    }
     const fileRef = ref(storageService, `${user?.uid}/${uuidv4()}`);
     let attachmentUrl = "";
     if (attachment) {

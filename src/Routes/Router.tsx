@@ -27,6 +27,7 @@ const Router = () => {
       setInit(true);
     });
   });
+
   return (
     <HashRouter>
       {init ? (
