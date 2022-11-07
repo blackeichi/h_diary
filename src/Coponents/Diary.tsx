@@ -225,6 +225,7 @@ export const Diary: React.FC<Inter> = ({ user }) => {
   useEffect(() => {
     getDiary();
   }, []);
+  const test = `안녕하세요\n저는`;
   return (
     <Box>
       {diary.map((note: Tdiary) => (
@@ -301,11 +302,7 @@ export const Diary: React.FC<Inter> = ({ user }) => {
                   <h1>{tex}</h1>
                 ))}
               </h1>
-              <textarea
-                onChange={onChangeText}
-                value="안녕하세요. 
-              저는"
-              />
+              <textarea onChange={onChangeText} value={test} />
               <Btn>완료</Btn>
             </Form>
           </FormBox>
