@@ -145,7 +145,6 @@ export const Profile: React.FC<Interface> = ({ user }) => {
       });
       attachmentUrl = await getDownloadURL(fileRef);
     }
-    await deleteObject(ref(storageService, user.photoURL));
     await updateProfile(user, {
       photoURL: attachmentUrl,
     });

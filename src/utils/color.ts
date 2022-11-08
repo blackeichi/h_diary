@@ -5,4 +5,5 @@ export const Color = {
   blackColr: "#32353F",
   yellocolr: "#FFE34F",
   lightBlue: "#edf7fa",
+  darkGray: "#727272",
 };

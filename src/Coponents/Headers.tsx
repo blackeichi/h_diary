@@ -1,10 +1,9 @@
-import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion } from "framer-motion";
 import React from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { authService } from "../fbase";
 import { ChangeNickname, menuOpenState, writeState } from "../utils/atom";
 import { FlexBox } from "../utils/Styled";
 
@@ -48,21 +47,27 @@ const ToggleBtn = styled(motion.div)<{ size: string }>`
   height: ${(props) => (props.size === "Mid" ? "4vw" : "24px")};
 `;
 const Icon = styled(motion.div)<{ size: string }>`
-  color: ${(props) => props.theme.blueColr};
+  color: ${(props) => props.theme.blackColr};
   background-color: white;
-  padding: ${(props) => (props.size === "Mid" ? "1.2vw" : "10px")};
+  width: ${(props) => (props.size === "Small" ? "30px" : "40px")};
+  height: ${(props) => (props.size === "Small" ? "30px" : "40px")};
   border-radius: 50%;
-  font-size: ${(props) => (props.size === "Small" ? "15px" : "20px")};
-  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
-const HeaderContent = styled.div`
+const Img = styled.img`
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+`;
+const HeaderContent = styled.div<{ size: string }>`
   display: flex;
   color: white;
   align-items: center;
-  gap: 20px;
-  font-weight: bold;
-  font-size: 18px;
-  font-family: "MonoplexKR-Regular";
+  gap: ${(props) => (props.size === "Small" ? "10px" : "15px")};
+  font-size: ${(props) => (props.size === "Small" ? "14px" : "18px")};
+  font-family: "MonoplexKR-Italic";
 `;
 
 const Text = styled(motion.h1)``;
@@ -74,9 +79,6 @@ type Interface = {
 
 export const Headers: React.FC<Interface> = ({ size, user }) => {
   const setWrite = useSetRecoilState(writeState);
-  const LogOut = () => {
-    authService.signOut();
-  };
   const [open, setOpen] = useRecoilState(menuOpenState);
   const toggleSwitch = () => {
     setOpen(!open);
@@ -95,7 +97,7 @@ export const Headers: React.FC<Interface> = ({ size, user }) => {
           ></ToggleBtn>
         </Toggle>
       )}
-      <HeaderContent>
+      <HeaderContent size={size}>
         <FlexBox gap={10}>
           <Text>
             {date.getMonth() + 1 < 10
@@ -130,7 +132,7 @@ export const Headers: React.FC<Interface> = ({ size, user }) => {
           </Text>
         </FlexBox>
         {size !== "Small" && (
-          <Text>
+          <Text style={{ color: "#FFE34F" }}>
             {newNick
               ? newNick
               : user?.displayName
@@ -138,8 +140,12 @@ export const Headers: React.FC<Interface> = ({ size, user }) => {
               : user?.email}
           </Text>
         )}
-        <Icon whileHover={{ scale: 1.1 }} size={size} onClick={LogOut}>
-          <FontAwesomeIcon icon={faRightFromBracket} />
+        <Icon size={size}>
+          {user?.photoURL ? (
+            <Img src={user?.photoURL} />
+          ) : (
+            <FontAwesomeIcon icon={faUser} />
+          )}
         </Icon>
       </HeaderContent>
     </Header>

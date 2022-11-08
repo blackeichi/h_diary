@@ -30,7 +30,9 @@ const Img = styled.img<{ size?: string }>`
   max-width: 100%;
   border-radius: 20px;
 `;
-const Text = styled.h1``;
+const Text = styled.h1<{ size?: string }>`
+  font-size: ${(props) => (props.size === "Small" ? "13px" : "16px")};
+`;
 const CursorBox = styled(motion.div)`
   cursor: pointer;
   color: ${(props) => props.theme.blackColr};
@@ -74,6 +76,7 @@ export const Message: React.FC<Interface> = ({ text, user }) => {
       window.confirm("삭제되었습니다. 👏");
       await deleteDoc(doc(dbService, "memo", text.id));
       await deleteObject(ref(storageService, text.attachmentUrl));
+      await deleteObject(ref(storageService, text.user.photoURL));
     }
   };
   return (
@@ -84,7 +87,8 @@ export const Message: React.FC<Interface> = ({ text, user }) => {
           width: "100%",
           maxWidth: "600px",
           alignItems: "center",
-          justifyContent: size !== "Web" ? "space-between" : "center",
+          justifyContent: "space-around",
+          //justifyContent: size === "Small" ? "center" : "space-between",
         }}
       >
         <FlexBox
@@ -95,9 +99,9 @@ export const Message: React.FC<Interface> = ({ text, user }) => {
           }}
         >
           <UserBox>
-            {user.photoURL ? (
+            {text.user.photoURL ? (
               <Anony>
-                <Avatar src={user.photoURL} />
+                <Avatar src={text.user.photoURL} />
               </Anony>
             ) : (
               <Anony>
@@ -105,7 +109,7 @@ export const Message: React.FC<Interface> = ({ text, user }) => {
               </Anony>
             )}
             <Username>
-              {user.displayName ? user.displayName : user.email}
+              {text.user.displayName ? text.user.displayName : text.user.email}
             </Username>
           </UserBox>
           <Username>
@@ -133,11 +137,13 @@ export const Message: React.FC<Interface> = ({ text, user }) => {
             <Username style={{ marginRight: "5px", fontWeight: "bold" }}>
               {text.user.displayName ? text.user.displayName : text.user.email}
             </Username>
-            <Text>{text.text}</Text>
+            <Text size={size}>{text.text}</Text>
           </FlexBox>
-          <CursorBox whileHover={{ scale: 1.2 }} onClick={onDeleteClick}>
-            <FontAwesomeIcon icon={faTrash} />
-          </CursorBox>
+          {user.uid === text.user.userId && (
+            <CursorBox whileHover={{ scale: 1.2 }} onClick={onDeleteClick}>
+              <FontAwesomeIcon icon={faTrash} />
+            </CursorBox>
+          )}
         </FlexBox>
       </ColBox>
     </Wrapper>

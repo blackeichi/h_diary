@@ -21,7 +21,7 @@ const Box = styled.div`
 `;
 const Container = styled.div<{ size: string }>`
   width: ${(props) => (props.size === "Small" ? "95%" : "90%")};
-  height: ${(props) => (props.size === "Small" ? "100vh" : "90vh")};
+  height: ${(props) => (props.size === "Small" ? "100%" : "90%")};
   max-width: 1400px;
   max-height: 800px;
   background-color: white;

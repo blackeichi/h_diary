@@ -8,7 +8,12 @@ const Box = styled(motion.div)<{ size: string }>`
   width: 250px;
   height: 100%;
   border-right: 1px solid lightgray;
-  position: ${(props) => (props.size === "Web" ? "static" : "absolute")};
+  position: ${(props) =>
+    props.size === "Web"
+      ? "static"
+      : props.size === "Mid"
+      ? "static"
+      : "absolute"};
   background-color: white;
   z-index: 3;
   font-family: "MonoplexKR-Regular";

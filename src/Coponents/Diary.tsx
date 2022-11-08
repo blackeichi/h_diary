@@ -1,11 +1,16 @@
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPen,
+  faPlus,
+  faTrashCan,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   onSnapshot,
-  orderBy,
   query,
   setDoc,
   where,
@@ -16,16 +21,32 @@ import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { dbService } from "../fbase";
 import { resizeState } from "../utils/atom";
+import "swiper/css";
+import "swiper/css/free-mode";
+import "swiper/css/scrollbar";
 
-const Box = styled.div`
+const Box = styled.div<{ size: string }>`
   width: 100%;
   height: 100%;
   background-color: #f0fbff;
   display: flex;
   flex-wrap: wrap;
-  padding: 20px;
+  padding: ${(props) => (props.size === "Small" ? "20px" : "40px")};
   box-sizing: border-box;
-  gap: 40px;
+  justify-content: ${(props) =>
+    props.size === "Small" ? "center" : "flex-start"};
+  gap: ${(props) => (props.size === "Small" ? "20px" : "40px")};
+  padding-bottom: 40px;
+  overflow-y: scroll;
+  ::-webkit-scrollbar {
+    background-color: #e5e5e5;
+    color: white;
+    width: 7px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: ${(props) => props.theme.darkGray};
+    border-radius: 10px;
+  }
 `;
 const Container = styled(motion.div)<{ size: string }>`
   cursor: pointer;
@@ -85,9 +106,10 @@ const CreateBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0;
+  z-index: 3;
 `;
 const FormBox = styled.div<{ size: string }>`
   width: ${(props) => (props.size === "Small" ? "100%" : "550px")};
@@ -100,10 +122,29 @@ const FormBox = styled.div<{ size: string }>`
   align-items: center;
   justify-content: center;
 `;
+const TextBox = styled(FormBox)`
+  position: relative;
+  width: ${(props) => (props.size === "Small" ? "95%" : "550px")};
+  height: ${(props) => (props.size === "Small" ? "90vh" : "95vh")};
+  overflow-y: scroll;
+  ::-webkit-scrollbar {
+    display: none;
+  }
+`;
 const Form = styled.form`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  padding-top: 40px;
+  padding-bottom: 20px;
+`;
+const TextArea = styled.textarea`
+  width: 90%;
+  height: 90%;
 `;
 const Input = styled.input`
   width: 250px;
@@ -112,13 +153,14 @@ const Input = styled.input`
   font-family: "MonoplexKR-Regular";
 `;
 const Btn = styled.button`
-  font-size: 18px;
+  font-size: 15px;
   background-color: ${(props) => props.theme.blackColr};
   color: white;
   font-family: "MonoplexKR-Regular";
   cursor: pointer;
   padding: 10px;
   border-radius: 10px;
+  width: 150px;
 `;
 const ColorBox = styled.div`
   display: flex;
@@ -138,6 +180,28 @@ const Overlay = styled(motion.div)`
   background-color: rgba(0, 0, 0, 0.5);
   position: absolute;
   z-index: 1;
+`;
+const DiaryBox = styled.div`
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+`;
+const DiaryTitle = styled.h1`
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  font-family: "FlowerSalt";
+  margin: 20px 0;
+`;
+const DiaryText = styled.h1`
+  border-bottom: 1px solid red;
+  text-decoration: underline 1px red;
+  text-underline-offset: 10px;
+  line-height: 30px;
+  border-collapse: collapse;
 `;
 type Inter = {
   user: any;
@@ -172,6 +236,9 @@ export const Diary: React.FC<Inter> = ({ user }) => {
   const [title, setTitle] = useState("");
   const [clicked, setClicked] = useState<Tdiary>();
   const [text, setText] = useState([]);
+  const [update, setUpdate] = useState(``);
+  const [openUpdate, setOpenUpdate] = useState(false);
+  //Diary
   const onSubmit = async (event: any) => {
     event.preventDefault();
     if (!title) {
@@ -194,21 +261,6 @@ export const Diary: React.FC<Inter> = ({ user }) => {
     } = event;
     setTitle(value);
   };
-  const onSubmitText = async (event: any) => {
-    event.preventDefault();
-    if (clicked?.id) {
-      await setDoc(doc(dbService, "diary", clicked?.id), { ...clicked, text });
-    }
-    setText([]);
-    setOpenMemo(false);
-  };
-  const onChangeText = (event: any) => {
-    const {
-      target: { value },
-    } = event;
-    const newText = value.split("\n");
-    setText(newText);
-  };
   const [diary, setDiary] = useState([] as any);
   const getDiary = async () => {
     await onSnapshot(
@@ -225,9 +277,61 @@ export const Diary: React.FC<Inter> = ({ user }) => {
   useEffect(() => {
     getDiary();
   }, []);
-  const test = `안녕하세요\n저는`;
+  //Diary Content
+  const onSubmitText = async (event: any) => {
+    event.preventDefault();
+    if (clicked?.id) {
+      await setDoc(doc(dbService, "diary", clicked?.id), { ...clicked, text });
+    }
+    setText(text);
+    //setOpenMemo(false);
+    setOpenUpdate(false);
+  };
+  const onChangeText = (event: any) => {
+    const {
+      target: { value },
+    } = event;
+    const newText = value.split("\n");
+    setText(newText);
+    setUpdate(value);
+  };
+  const getText = async (note: Tdiary) => {
+    await onSnapshot(
+      query(collection(dbService, "diary"), where("id", "==", note?.id)),
+      (col) => {
+        const newText: any = col.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setText(newText[0].text);
+      }
+    );
+  };
+  const onUpdate = () => {
+    setUpdate(text.join(`\n`));
+  };
+  const closeTextBox = () => {
+    setOpenMemo(false);
+    setOpenUpdate(false);
+    setText([]);
+  };
+  const deleteDiary = async () => {
+    const ok = window.confirm("정말 삭제하시겠습니까? 😮");
+    if (ok && clicked) {
+      window.confirm("삭제되었습니다. 👏");
+      await deleteDoc(doc(dbService, "diary", clicked.id));
+      setOpenMemo(false);
+    }
+  };
   return (
-    <Box>
+    <Box size={size}>
+      <Add
+        size={size}
+        onClick={() => setOpen(true)}
+        whileHover={{ scale: 1.03 }}
+      >
+        <FontAwesomeIcon icon={faPlus} />
+      </Add>
       {diary.map((note: Tdiary) => (
         <Container
           whileHover={{ scale: 1.03 }}
@@ -236,6 +340,7 @@ export const Diary: React.FC<Inter> = ({ user }) => {
           onClick={() => {
             setOpenMemo(true);
             setClicked(note);
+            getText(note);
           }}
         >
           <Note style={{ backgroundColor: note.color }} size={size}>
@@ -244,13 +349,7 @@ export const Diary: React.FC<Inter> = ({ user }) => {
           <Shadow size={size} />
         </Container>
       ))}
-      <Add
-        size={size}
-        onClick={() => setOpen(true)}
-        whileHover={{ scale: 1.03 }}
-      >
-        <FontAwesomeIcon icon={faPlus} />
-      </Add>
+
       {open && (
         <CreateBox>
           <FormBox size={size}>
@@ -295,23 +394,77 @@ export const Diary: React.FC<Inter> = ({ user }) => {
       )}
       {openMemo && (
         <CreateBox>
-          <FormBox size={size}>
-            <Form onSubmit={onSubmitText}>
-              <h1>
-                {text.map((tex) => (
-                  <h1>{tex}</h1>
-                ))}
-              </h1>
-              <textarea onChange={onChangeText} value={test} />
-              <Btn>완료</Btn>
-            </Form>
-          </FormBox>
+          <TextBox size={size}>
+            <FontAwesomeIcon
+              onClick={closeTextBox}
+              style={{
+                cursor: "pointer",
+                position: "absolute",
+                top: "10px",
+                right: "10px",
+                width: "15px",
+                height: "15px",
+                backgroundColor: "#32353F",
+                color: "white",
+                borderRadius: "50%",
+                padding: "5px",
+              }}
+              icon={faXmark}
+            />
+            <FontAwesomeIcon
+              onClick={deleteDiary}
+              style={{
+                cursor: "pointer",
+                position: "absolute",
+                top: "10px",
+                right: "40px",
+                width: "15px",
+                height: "15px",
+                backgroundColor: "#32353F",
+                color: "white",
+                borderRadius: "50%",
+                padding: "5px",
+              }}
+              icon={faTrashCan}
+            />
+            {openUpdate ? (
+              <Form onSubmit={onSubmitText}>
+                <TextArea onChange={onChangeText} value={update} />
+                <Btn>완료</Btn>
+              </Form>
+            ) : (
+              <>
+                <DiaryBox>
+                  <DiaryTitle>{clicked?.title}</DiaryTitle>
+                  {text.map((tex, index) => (
+                    <DiaryText key={index}>{tex}</DiaryText>
+                  ))}
+                </DiaryBox>
+                <FontAwesomeIcon
+                  style={{
+                    cursor: "pointer",
+                    position: "absolute",
+                    top: "10px",
+                    right: "70px",
+                    width: "15px",
+                    height: "15px",
+                    backgroundColor: "#32353F",
+                    color: "white",
+                    borderRadius: "50%",
+                    padding: "5px",
+                  }}
+                  onClick={() => {
+                    setOpenUpdate(true);
+                    onUpdate();
+                  }}
+                  icon={faPen}
+                />
+              </>
+            )}
+          </TextBox>
           <Overlay
             style={openMemo ? { display: "block" } : { display: "none" }}
-            onClick={() => {
-              setOpenMemo(false);
-              setText([]);
-            }}
+            onClick={closeTextBox}
           />
         </CreateBox>
       )}

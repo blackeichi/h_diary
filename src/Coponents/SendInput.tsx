@@ -119,6 +119,7 @@ export const SendInput: React.FC<Inter> = ({ size, user }) => {
         userId: user?.uid,
         email: user?.email,
         displayName: user?.displayName,
+        photoURL: user?.photoURL,
       },
     });
     setText("");

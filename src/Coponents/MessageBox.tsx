@@ -18,7 +18,7 @@ export type TText = {
   id: string;
   attachmentUrl: string;
   text: string;
-  user: { displayName: any; email: string; userId: string };
+  user: { displayName: any; email: string; userId: string; photoURL: string };
 };
 type Inter = {
   user: any;
