@@ -31,3 +31,15 @@
   box-sizing: border-box;
   padding: 30px;
 }
+
+.react-calendar__navigation__label {
+  color: #f87171;
+  font-size: 18px;
+  font-weight: bold;
+}
+.react-calendar {
+  padding: 10px 20px;
+  box-sizing: content-box;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-radius: 30px;
+}

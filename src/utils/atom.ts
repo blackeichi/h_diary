@@ -7,7 +7,7 @@ export const resizeState = atom({
 
 export const selectState = atom({
   key: "select",
-  default: "diary" || "message" || "profile",
+  default: "diary" || "message" || "profile" ||"calendar",
 });
 export const writeState = atom({
   key: "write",

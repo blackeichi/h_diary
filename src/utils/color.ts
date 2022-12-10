@@ -6,4 +6,5 @@ export const Color = {
   yellocolr: "#FFE34F",
   lightBlue: "#edf7fa",
   darkGray: "#727272",
+  redColor: "#f87171",
 };

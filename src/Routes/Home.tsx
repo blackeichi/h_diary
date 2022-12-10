@@ -9,6 +9,7 @@ import { Menu } from "../Coponents/Menu";
 import { Headers } from "../Coponents/Headers";
 import { Profile } from "../Coponents/Profile";
 import { Diary } from "../Coponents/Diary";
+import { CalendarPage } from "../Coponents/CalendarPage";
 
 const Box = styled.div`
   display: flex;
@@ -67,6 +68,7 @@ export const Home = () => {
             )}
             {select === "profile" && <Profile user={user} />}
             {select === "diary" && <Diary user={user} />}
+            {select === "calendar" && <CalendarPage user={user} />}
           </Content>
         </ContentBox>
       </Container>
