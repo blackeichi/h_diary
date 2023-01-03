@@ -43,6 +43,8 @@
 <img width="100%" src="https://user-images.githubusercontent.com/87626378/210434499-a7bc5d9e-f2d9-473b-b73d-98e517355a74.PNG"/>
 (스케쥴이 작성된 날엔 빨간색 원이 표시됩니다)
 
+<br/>
+
 ### 3. 커뮤니티 기능
 
 > 다른 사람들과 생각을 공유해보세요!
@@ -50,6 +52,8 @@
 <img width="100%" src="https://user-images.githubusercontent.com/87626378/210434989-1190e4a6-24df-481f-87e8-e0a74b0ef333.gif"/>
 
 사진을 업로드하고 글을 남길 수 있습니다!
+
+<br/>
 
 ## :sparkles: 기술 스택
 
