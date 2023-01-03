@@ -1,46 +1,62 @@
-# Getting Started with Create React App
+# 📖 나와 우리의 다이어리
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<img width="100%" src="https://user-images.githubusercontent.com/87626378/210433530-301cd1be-4d15-4c59-b490-245fb860438a.png"/>
 
-## Available Scripts
+<br/>
 
-In the project directory, you can run:
+## 프로젝트 소개
 
-### `npm start`
+> 게시판에서 서로의 글도 공유할 수 있으며, 개인 메모장은 물론 달력을 이용한 to do list작성 기능을 제공하는 서비스입니다.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+🤔 당신은 해야할 일을 모두 잘 해내고 있나요?
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+📆 스케쥴관리를 위해 달력을 이용하시고 계신가요?
 
-### `npm test`
+✍ 이곳 저곳에 메모를 하고 계신가요?
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+😲 그렇다면 메모장과 달력 기능을 제공하는 **[나와 우리의 다이어리](https://benevolent-narwhal-21dde8.netlify.app/)** 를 사용해보세요!
 
-### `npm run build`
+<br/>
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### :link: 배포 링크
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+👉 [나와 우리의 다이어리](https://benevolent-narwhal-21dde8.netlify.app/)
+👉 [Velog](https://velog.io/@blackeichi/React-Project-%EB%82%98%EC%99%80-%EC%9A%B0%EB%A6%AC%EC%9D%98-%EB%8B%A4%EC%9D%B4%EC%96%B4%EB%A6%AC)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+<br/>
 
-### `npm run eject`
+## 🪶 주요 기능
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### 1. 메모장 기능
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+> 다양한 메모장을 만들고 각 메모를 분배해서 정리해보세요!
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+<img width="100%" src="https://user-images.githubusercontent.com/87626378/210434301-276ea69e-3843-43b0-9584-691d4b9072d5.PNG"/>
+<img width="100%" src="https://user-images.githubusercontent.com/87626378/210434323-aaed8063-0b90-4f3c-9dd7-3a123c885b93.PNG"/>
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+<br/>
 
-## Learn More
+### 2. 달력 기능
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+> 달력에 스케쥴을 정리하고 계획을 지키세요!
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+<img width="100%" src="https://user-images.githubusercontent.com/87626378/210434499-a7bc5d9e-f2d9-473b-b73d-98e517355a74.PNG"/>
+(스케쥴이 작성된 날엔 빨간색 원이 표시됩니다)
+
+### 3. 커뮤니티 기능
+
+> 다른 사람들과 생각을 공유해보세요!
+
+<img width="100%" src="https://user-images.githubusercontent.com/87626378/210434989-1190e4a6-24df-481f-87e8-e0a74b0ef333.gif"/>
+
+사진을 업로드하고 글을 남길 수 있습니다!
+
+## :sparkles: 기술 스택
+
+<div align=center>
+<img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black">
+<img src="https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white">
+<img src="https://img.shields.io/badge/styled_component-DB7093?style=for-the-badge&logo=styled-components&logoColor=white">
+<img src="https://img.shields.io/badge/Recoil-black?style=for-the-badge&logo=Recoil&logoColor=white">
+<img src="https://img.shields.io/badge/Framer%20motion-black?style=for-the-badge&logo=Recoil&logoColor=white">
+<img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=Firebase&logoColor=white"></div>
